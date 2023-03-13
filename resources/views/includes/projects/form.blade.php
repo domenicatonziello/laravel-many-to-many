@@ -52,6 +52,18 @@
                 <div class="invalid-feedback"> {{$message}} </div>
             @enderror
         </div>
+        <div class="col-14 mb-4">
+            <h6>Tecnologie</h6>
+            @foreach($technologies as $technology)
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="tec-{{$technology->id}}">{{$technology->label}}</label>
+                    <input class="form-check-input" type="checkbox"  @if(in_array($technology->id, old('technologies', $proj_tech ?? []))) checked @endif id="tec-{{$technology->id}}" name="technologies[]" value="{{$technology->id}}">
+                </div>              
+            @endforeach
+            @error('technologies')
+                <div class="text-danger"> {{ $message }} </div>
+            @enderror
+        </div>
     </div>
     <a href="{{route('admin.projects.index')}}" class="btn btn-secondary">Indietro</a>
     <button type="submit" class="btn btn-primary">Salva</button>
