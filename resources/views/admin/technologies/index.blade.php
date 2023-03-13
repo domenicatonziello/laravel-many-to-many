@@ -5,7 +5,7 @@
 @section ('content')
     <div class="d-flex justify-content-between align-items-center my-5">
         <h1 class="">Tecnologie </h1>
-        <a href="{{route('admin.tecnologies.create')}}" class="btn btn-success">Aggiungi</a>
+        <a href="{{route('admin.technologies.create')}}" class="btn btn-success">Aggiungi</a>
     </div>
     <table class="table">
         <thead>
