@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Technology;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TechnologyController extends Controller
 {
@@ -13,7 +14,8 @@ class TechnologyController extends Controller
      */
     public function index()
     {
-        //
+        $technologies = Technology::all();
+        return view('admin.technologies.index', compact('technologies'));
     }
 
     /**
@@ -21,7 +23,8 @@ class TechnologyController extends Controller
      */
     public function create()
     {
-        //
+        $technology = new Technology();
+        return view('admin.technologies.create', compact('technology'));
     }
 
     /**
@@ -29,7 +32,24 @@ class TechnologyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'label' => 'required|string|unique:types|max:20',
+            'color' => 'required|string|size:7'
+        ], [
+            'label.required' => 'Il nome è obbligatorio',
+            'label.unique' => 'Esiste già una tecnologia con questo nome',
+            'label.max' => 'Il nome deve avere massimo :max caratteri',
+            'color.required' => 'Il colore è obbligatorio',
+            'color.size' => 'Il colore deve essere un codice esadecimale con cancelletto'
+        ]);
+
+        $data = $request->all();
+        $technology = new Technology();
+
+        $technology->fill($data);
+        $technology->save();
+
+        return to_route('admin.technologies.show', $technology->id)->with('type', 'success')->with('message', 'Elemento creato con successo');
     }
 
     /**
@@ -37,7 +57,7 @@ class TechnologyController extends Controller
      */
     public function show(Technology $technology)
     {
-        //
+        return to_route('admin.technologies.show', compact('technology'));
     }
 
     /**
@@ -45,7 +65,7 @@ class TechnologyController extends Controller
      */
     public function edit(Technology $technology)
     {
-        //
+        return view('admin.technologies.edit', compact('technology'));
     }
 
     /**
@@ -53,7 +73,23 @@ class TechnologyController extends Controller
      */
     public function update(Request $request, Technology $technology)
     {
-        //
+        $request->validate([
+            'label' => ['required', 'string', Rule::unique('technologies')->ignore($technology->id), 'max:20'],
+            'color' => 'required|string|size:7'
+        ], [
+            'label.required' => 'Il nome è obbligatorio',
+            'label.unique' => 'Esiste già una tecnologia con questo nome',
+            'label.max' => 'Il nome deve avere massimo :max caratteri',
+            'color.required' => 'Il colore è obbligatorio',
+            'color.size' => 'Il colore deve essere un codice esadecimale con cancelletto'
+        ]);
+
+        $data = $request->all();
+
+        $technology->fill($data);
+        $technology->save();
+
+        return to_route('admin.technologies.show', $technology->id)->with('type', 'success')->with('message', 'Elemento modificato con successo');
     }
 
     /**
@@ -61,6 +97,7 @@ class TechnologyController extends Controller
      */
     public function destroy(Technology $technology)
     {
-        //
+        $technology->delete();
+        return to_route('admin.technologies.index')->with('type', 'danger')->with('message', "L'elemento è stato eliminato.");
     }
 }
