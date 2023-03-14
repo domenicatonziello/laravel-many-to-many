@@ -57,7 +57,7 @@ class TechnologyController extends Controller
      */
     public function show(Technology $technology)
     {
-        return to_route('admin.technologies.show', compact('technology'));
+        return view('admin.technologies.show', compact('technology'));
     }
 
     /**
